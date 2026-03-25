@@ -12,7 +12,7 @@ import uuid
 import time
 import asyncio
 
-import anthropic
+import openai
 
 from core.config import settings
 from core.data_loader import CourseDataLoader
@@ -94,16 +94,16 @@ async def startup_event():
         print("✓ In-house similarity engine initialized (no API keys required)")
         print("✓ Using sentence-transformers + TF-IDF + knowledge-points + rule-based matching")
 
-        # Initialize Anthropic client for AI research agent
-        anthropic_client = None
-        if settings.anthropic_api_key:
-            anthropic_client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
-            print("✓ Anthropic client initialized for AI research agent")
+        # Initialize OpenAI client for AI research agent
+        openai_client = None
+        if settings.openai_api_key:
+            openai_client = openai.OpenAI(api_key=settings.openai_api_key)
+            print("✓ OpenAI client initialized for AI research agent")
         else:
-            print("  Note: ANTHROPIC_API_KEY not set. Transcript pipeline will not work.")
+            print("  Note: OPENAI_API_KEY not set. Transcript pipeline will not work.")
 
         # Initialize on-demand pipeline
-        pipeline = TransferPipeline(similarity_engine, catalog_cache, anthropic_client)
+        pipeline = TransferPipeline(similarity_engine, catalog_cache, openai_client)
         print("✓ On-demand evaluation pipeline ready")
         print("  POST /pipeline/evaluate — manual course input")
         print("  POST /pipeline/transcript-evaluate — transcript PDF upload")
@@ -608,10 +608,10 @@ async def pipeline_transcript_evaluate(
     if not pipeline:
         raise HTTPException(status_code=500, detail="Pipeline not initialized")
 
-    if not settings.anthropic_api_key:
+    if not settings.openai_api_key:
         raise HTTPException(
             status_code=500,
-            detail="ANTHROPIC_API_KEY not configured. Required for transcript evaluation.",
+            detail="OPENAI_API_KEY not configured. Required for transcript evaluation.",
         )
 
     # Validate file type
@@ -647,10 +647,10 @@ async def pipeline_transcript_evaluate_stream(
     if not pipeline:
         raise HTTPException(status_code=500, detail="Pipeline not initialized")
 
-    if not settings.anthropic_api_key:
+    if not settings.openai_api_key:
         raise HTTPException(
             status_code=500,
-            detail="ANTHROPIC_API_KEY not configured.",
+            detail="OPENAI_API_KEY not configured.",
         )
 
     pdf_bytes = await file.read()
