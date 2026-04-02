@@ -5,14 +5,14 @@ const STAGES = [
   { key: 'matching', label: 'Similarity analysis' },
 ]
 
-export default function ProgressTracker({ progress }) {
+export default function ProgressTracker({ progress, title = 'Progress' }) {
   if (!progress) return null
 
   const currentIdx = STAGES.findIndex((s) => s.key === progress.stage)
 
   return (
     <div className="cc-card p-6 sm:p-8">
-      <h3 className="cc-title-3 font-display mb-6">Progress</h3>
+      <h3 className="cc-title-3 font-display mb-6">{title}</h3>
 
       <div className="space-y-4 mb-6">
         {STAGES.map((stage, idx) => {

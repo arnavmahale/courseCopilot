@@ -6,7 +6,26 @@ import MatchResultsList from '../components/matching/MatchResultsList'
 import useMatch from '../hooks/useMatch'
 import { getSourceCourses } from '../api/client'
 
-export default function CatalogMatchPage() {
+const PORTAL_COPY = {
+  university: {
+    title: 'Quick match from catalog',
+    subtitleBase: 'Choose a course from the source catalog',
+    breadcrumbs: [{ to: '/coordinator', label: 'University' }, { label: 'Quick match' }],
+  },
+  student: {
+    title: 'Quick match',
+    subtitleBase: 'Pick one course from the source catalog (student tool)',
+    breadcrumbs: [{ to: '/student', label: 'Student' }, { label: 'Quick match' }],
+  },
+  faculty: {
+    title: 'Quick match',
+    subtitleBase: 'Faculty tool: compare a catalog course to a target institution',
+    breadcrumbs: [{ to: '/professor', label: 'Faculty' }, { label: 'Quick match' }],
+  },
+}
+
+export default function CatalogMatchPage({ portal = 'university' }) {
+  const copy = PORTAL_COPY[portal] || PORTAL_COPY.university
   const [courses, setCourses] = useState([])
   const [sourceUni, setSourceUni] = useState('')
   const [loadingList, setLoadingList] = useState(true)
@@ -48,12 +67,9 @@ export default function CatalogMatchPage() {
 
   return (
     <PageContainer
-      title="Quick match from catalog"
-      subtitle={`Choose a course from the source catalog${sourceUni ? ` (${sourceUni})` : ''} and find the best equivalents at your target institution.`}
-      breadcrumbs={[
-        { to: '/workbench', label: 'Workbench' },
-        { label: 'Quick match' },
-      ]}
+      title={copy.title}
+      subtitle={`${copy.subtitleBase}${sourceUni ? ` (${sourceUni})` : ''} and find the best equivalents at your target institution.`}
+      breadcrumbs={copy.breadcrumbs}
     >
       <div className="grid lg:grid-cols-5 gap-8">
         <div className="lg:col-span-2 space-y-5">

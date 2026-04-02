@@ -4,9 +4,19 @@ import LoadingSpinner from '../components/common/LoadingSpinner'
 import SyllabusForm from '../components/matching/SyllabusForm'
 import MatchResultsList from '../components/matching/MatchResultsList'
 import useMatch from '../hooks/useMatch'
+import { useAuth } from '../auth/AuthContext'
 
 export default function MatchingPage() {
+  const { user } = useAuth()
   const { result, loading, error, reset, runMatchCustom } = useMatch()
+
+  const role = user?.role
+  const parentCrumb =
+    role === 'professor'
+      ? { to: '/professor', label: 'Faculty' }
+      : role === 'coordinator' || role === 'admin'
+        ? { to: '/coordinator', label: 'University' }
+        : { to: '/workbench', label: 'Workbench' }
 
   const handleSubmit = (formData) => {
     reset()
@@ -17,7 +27,7 @@ export default function MatchingPage() {
     <PageContainer
       title="Custom syllabus match"
       subtitle="Enter course details manually when the class is not in the preloaded catalog."
-      breadcrumbs={[{ to: '/workbench', label: 'Workbench' }, { label: 'Custom syllabus' }]}
+      breadcrumbs={[parentCrumb, { label: 'Custom syllabus' }]}
     >
       <div className="grid lg:grid-cols-2 gap-8">
         <div>

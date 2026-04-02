@@ -35,10 +35,10 @@ const tips = [
 export default function ResourcesPage() {
   return (
     <PageContainer
-      title="Resources"
-      subtitle="How everything fits together, plus tips for evaluators and developers."
+      title="University resources"
+      subtitle="Evaluator and articulation workflows — not shown to students or faculty in their portals."
       breadcrumbs={[
-        { to: '/workbench', label: 'Workbench' },
+        { to: '/coordinator', label: 'University' },
         { label: 'Resources' },
       ]}
     >

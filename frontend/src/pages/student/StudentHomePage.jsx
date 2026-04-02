@@ -11,38 +11,45 @@ const navItems = [
 
 const secondaryTools = [
   {
-    to: '/catalog-match',
+    to: '/student/quick-match',
     title: 'Quick match',
-    desc: 'One course from the catalog vs. a target school.',
+    desc: 'One course from the catalog vs. a target school (student tool).',
   },
   {
-    to: '/courses',
+    to: '/student/catalog',
     title: 'Browse catalog',
-    desc: 'Search everything in the loaded dataset.',
+    desc: 'Student-only catalog view — same data, different pages than staff.',
   },
 ]
 
 export default function StudentHomePage() {
   return (
-    <PageContainer
-      title="Upload your transcript"
-      subtitle="Start here to evaluate transfer credit. Your PDF is processed by the pipeline when the API is configured (OpenAI keys, etc.). Quick match and catalog are below if you only need a single-course check."
-      breadcrumbs={[{ label: 'Student' }]}
-    >
-      <StakeholderNav items={navItems} />
-
-      <div className="max-w-2xl mb-14">
-        <TranscriptUploadPanel />
+    <PageContainer wide breadcrumbs={[{ label: 'Student' }]} title={null} subtitle={null}>
+      <div className="cc-hero px-8 py-12 sm:px-12 sm:py-14 mb-10 rounded-[var(--cc-radius-lg)] border border-[var(--cc-border)]">
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--cc-accent)] mb-3">
+          Main student workflow
+        </p>
+        <h1 className="cc-large-title font-display max-w-3xl">Transcript PDF · research agent pipeline</h1>
+        <p className="mt-5 text-[19px] leading-relaxed text-[var(--cc-label-secondary)] max-w-3xl">
+          This is the working flow: upload your PDF, then watch the pipeline stream parsing, web research on courses, and
+          similarity matching. Requires a running API with <code className="font-mono text-[15px]">OPENAI_API_KEY</code>{' '}
+          for the agent path. Results render below with course tables and match cards.
+        </p>
+        <div className="mt-10">
+          <TranscriptUploadPanel variant="workspace" embeddedInHero showHowItWorksWhenIdle />
+        </div>
       </div>
 
-      <section aria-labelledby="student-more-heading">
+      <StakeholderNav items={navItems} />
+
+      <section aria-labelledby="student-more-heading" className="mt-14">
         <h2 id="student-more-heading" className="cc-title-2 font-display mb-4">
           Other tools
         </h2>
         <p className="cc-footnote mb-5 max-w-xl">
-          Use these when you are not running a full transcript — they use the same live API as the workbench.
+          Quick match and catalog skip the full transcript agent — same API as everywhere else.
         </p>
-        <div className="grid sm:grid-cols-2 gap-4">
+        <div className="grid sm:grid-cols-2 gap-4 max-w-3xl">
           {secondaryTools.map(({ to, title, desc }) => (
             <Link
               key={to}
@@ -60,10 +67,10 @@ export default function StudentHomePage() {
         </div>
       </section>
 
-      <div className="mt-10 cc-card p-6 bg-[var(--cc-bg)] border-transparent">
+      <div className="mt-10 cc-card p-6 bg-[var(--cc-bg)] border-transparent max-w-3xl">
         <p className="cc-footnote leading-relaxed">
-          Saved applications and coordinator messaging will appear here after you connect Supabase. The transcript flow
-          above is the main student experience for now.
+          Saved applications and coordinator messaging will appear here after Supabase. The block above stays the
+          primary transcript + agent experience for students.
         </p>
       </div>
     </PageContainer>

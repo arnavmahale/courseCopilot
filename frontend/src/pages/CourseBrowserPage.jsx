@@ -7,7 +7,35 @@ import CourseTable from '../components/courses/CourseTable'
 import CourseDetailModal from '../components/courses/CourseDetailModal'
 import useCourses from '../hooks/useCourses'
 
-export default function CourseBrowserPage() {
+const PORTAL_COPY = {
+  workbench: {
+    title: 'Course catalog',
+    subtitle:
+      'Inspect every row in the loaded dataset. Filter by institution or search across titles and codes.',
+    breadcrumbs: [{ to: '/workbench', label: 'Workbench' }, { label: 'Catalog' }],
+  },
+  student: {
+    title: 'Course catalog',
+    subtitle:
+      'Browse the same dataset staff use, in a student-only view. Filter by school or search titles and codes.',
+    breadcrumbs: [{ to: '/student', label: 'Student' }, { label: 'Catalog' }],
+  },
+  university: {
+    title: 'Course catalog',
+    subtitle:
+      'Evaluator view: inspect every row in the loaded dataset. Filter by institution or search across titles and codes.',
+    breadcrumbs: [{ to: '/coordinator', label: 'University' }, { label: 'Catalog' }],
+  },
+  faculty: {
+    title: 'Course catalog',
+    subtitle:
+      'Faculty view: browse the catalog to align syllabi and spot-check course metadata for your institution.',
+    breadcrumbs: [{ to: '/professor', label: 'Faculty' }, { label: 'Catalog' }],
+  },
+}
+
+export default function CourseBrowserPage({ portal = 'workbench' }) {
+  const copy = PORTAL_COPY[portal] || PORTAL_COPY.workbench
   const [university, setUniversity] = useState('')
   const [search, setSearch] = useState('')
   const [selectedCourseId, setSelectedCourseId] = useState(null)
@@ -26,11 +54,7 @@ export default function CourseBrowserPage() {
   }, [courses, search])
 
   return (
-    <PageContainer
-      title="Course catalog"
-      subtitle="Inspect every row in the loaded dataset. Filter by institution or search across titles and codes."
-      breadcrumbs={[{ to: '/workbench', label: 'Workbench' }, { label: 'Catalog' }]}
-    >
+    <PageContainer title={copy.title} subtitle={copy.subtitle} breadcrumbs={copy.breadcrumbs}>
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <UniversityFilter value={university} onChange={setUniversity} />
         <input

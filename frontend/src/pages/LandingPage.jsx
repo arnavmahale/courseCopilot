@@ -129,8 +129,10 @@ export default function LandingPage() {
         <div className="mt-16 cc-card p-8 text-center">
           <p className="text-[17px] text-[var(--cc-label)] font-medium">Staff and faculty</p>
           <p className="cc-footnote mt-2 max-w-lg mx-auto">
-            University and admin roles get <strong className="text-[var(--cc-label)]">All tools</strong> (workbench) in
-            the header; students stay on transcript, quick match, and catalog only.
+            University and admin use staff URLs (<code className="font-mono text-[13px]">/courses</code>,{' '}
+            <code className="font-mono text-[13px]">/catalog-match</code>). Faculty use{' '}
+            <code className="font-mono text-[13px]">/professor/…</code> tools. Students use{' '}
+            <code className="font-mono text-[13px]">/student/…</code> only — they cannot open staff pages.
           </p>
         </div>
       </main>

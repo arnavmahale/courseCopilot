@@ -16,15 +16,15 @@ const tools = [
     live: true,
   },
   {
-    to: '/courses',
+    to: '/professor/catalog',
     title: 'Catalog',
-    desc: 'Reference how courses appear in the dataset your institution loaded.',
+    desc: 'Faculty-only catalog browser — same API, different pages than students or evaluators.',
     live: true,
   },
   {
-    to: '/catalog-match',
+    to: '/professor/quick-match',
     title: 'Quick match',
-    desc: 'Spot-check a catalog course against a target university.',
+    desc: 'Faculty quick match; not the student or university URLs.',
     live: true,
   },
 ]

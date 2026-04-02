@@ -8,7 +8,7 @@ export default function useTranscriptEval() {
   const [error, setError] = useState(null)
   const abortRef = useRef(null)
 
-  const evaluate = useCallback(async (file, targetUniversity) => {
+  const evaluate = useCallback(async (file, targetUniversity, topN = 3) => {
     setLoading(true)
     setResult(null)
     setProgress({ stage: 'parsing', current: 0, total: 0, message: 'Uploading transcript...' })
@@ -17,6 +17,7 @@ export default function useTranscriptEval() {
     const formData = new FormData()
     formData.append('file', file)
     formData.append('target_university', targetUniversity)
+    formData.append('top_n', String(Math.min(10, Math.max(1, topN))))
 
     try {
       // Try streaming endpoint first for progress updates

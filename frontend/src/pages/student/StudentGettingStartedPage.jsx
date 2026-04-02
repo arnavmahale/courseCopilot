@@ -60,7 +60,7 @@ export default function StudentGettingStartedPage() {
         <Link to="/student" className="cc-btn-primary">
           Upload transcript
         </Link>
-        <Link to="/catalog-match" className="cc-btn-secondary px-5 py-2.5">
+        <Link to="/student/quick-match" className="cc-btn-secondary px-5 py-2.5">
           Quick match
         </Link>
       </div>

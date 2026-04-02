@@ -11,19 +11,19 @@ function buildNavItems(role, roleHomePath) {
   if (role === 'student') {
     return [
       { to: roleHomePath, label: 'Transcript', end: true },
-      { to: '/catalog-match', label: 'Quick match' },
-      { to: '/courses', label: 'Catalog' },
-      resources,
+      { to: '/student/quick-match', label: 'Quick match' },
+      { to: '/student/catalog', label: 'Catalog' },
+      { to: '/student/resources', label: 'Help' },
     ]
   }
   if (role === 'professor') {
     return [
       { to: roleHomePath, label: 'Faculty', end: true },
       { to: '/match', label: 'Syllabus' },
-      { to: '/courses', label: 'Catalog' },
-      { to: '/catalog-match', label: 'Quick match' },
+      { to: '/professor/catalog', label: 'Catalog' },
+      { to: '/professor/quick-match', label: 'Quick match' },
       workbench,
-      resources,
+      { to: '/professor/resources', label: 'Resources' },
     ]
   }
   if (role === 'admin') {

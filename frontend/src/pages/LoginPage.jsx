@@ -3,7 +3,7 @@ import { useNavigate, useLocation, Link, useSearchParams } from 'react-router-do
 import { useAuth } from '../auth/AuthContext'
 import { HARDCODED_USERS, DEMO_PASSWORD } from '../auth/hardcodedUsers'
 import { ROLE_IDS, ROLE_META, defaultPathForRole, parseRoleParam } from '../auth/roles'
-import { isPathForbiddenForRole } from '../auth/routeAccess'
+import { isPathAllowedForRole } from '../auth/routeAccess'
 
 export default function LoginPage() {
   const { login, user, ready } = useAuth()
@@ -25,7 +25,7 @@ export default function LoginPage() {
     if (!ready || !user) return
     const candidate =
       from && from !== '/login' && !from.startsWith('/login') ? from : defaultPathForRole(user.role)
-    const safeFrom = isPathForbiddenForRole(user.role, candidate) ? defaultPathForRole(user.role) : candidate
+    const safeFrom = isPathAllowedForRole(user.role, candidate) ? candidate : defaultPathForRole(user.role)
     navigate(safeFrom, { replace: true })
   }, [ready, user, navigate, from])
 

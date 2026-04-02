@@ -5,14 +5,14 @@ export default function TranscriptUploadPage() {
   return (
     <PageContainer
       title="Transcript upload"
-      subtitle="Upload a transcript PDF for pipeline-based evaluation when your server is configured for it."
+      subtitle="Same PDF → research agent → matching pipeline as the student home. Streams live progress when the API has OpenAI configured."
       breadcrumbs={[
         { to: '/student', label: 'Student' },
         { label: 'Transcript' },
       ]}
     >
-      <div className="max-w-2xl mx-auto">
-        <TranscriptUploadPanel />
+      <div className="max-w-4xl mx-auto">
+        <TranscriptUploadPanel variant="workspace" />
       </div>
     </PageContainer>
   )

@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react'
 
-export default function FileUpload({ onFileSelect, disabled }) {
+export default function FileUpload({ onFileSelect, disabled, size = 'default' }) {
+  const isLarge = size === 'large'
   const [dragOver, setDragOver] = useState(false)
   const [selectedFile, setSelectedFile] = useState(null)
   const [error, setError] = useState(null)
@@ -63,7 +64,9 @@ export default function FileUpload({ onFileSelect, disabled }) {
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
-        className={`relative rounded-[var(--cc-radius-lg)] p-10 text-center transition-all ${
+        className={`relative rounded-[var(--cc-radius-lg)] text-center transition-all ${
+          isLarge ? 'p-12 sm:p-16 min-h-[220px] flex flex-col items-center justify-center' : 'p-10'
+        } ${
           disabled
             ? 'opacity-45 cursor-not-allowed bg-[var(--cc-bg)] border border-[var(--cc-separator)]'
             : dragOver
@@ -100,10 +103,12 @@ export default function FileUpload({ onFileSelect, disabled }) {
           </div>
         ) : (
           <div>
-            <p className="text-[17px] font-medium text-[var(--cc-label)]">
-              Drop PDF here or click to choose
+            <p className={`font-medium text-[var(--cc-label)] ${isLarge ? 'text-[21px] sm:text-[23px]' : 'text-[17px]'}`}>
+              {isLarge ? 'Drop transcript PDF here or click to choose' : 'Drop PDF here or click to choose'}
             </p>
-            <p className="cc-footnote mt-2">PDF, up to 10 MB</p>
+            <p className="cc-footnote mt-2">
+              {isLarge ? 'PDF, up to 10 MB — starts the research agent + matching pipeline' : 'PDF, up to 10 MB'}
+            </p>
           </div>
         )}
       </div>

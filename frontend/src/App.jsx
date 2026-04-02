@@ -11,7 +11,8 @@ import MatchingPage from './pages/MatchingPage'
 import BatchEvaluationPage from './pages/BatchEvaluationPage'
 import TranscriptUploadPage from './pages/TranscriptUploadPage'
 import ResourcesPage from './pages/ResourcesPage'
-import NotFoundPage from './pages/NotFoundPage'
+import StudentResourcesPage from './pages/student/StudentResourcesPage'
+import ProfessorResourcesPage from './pages/professor/ProfessorResourcesPage'
 import LoginPage from './pages/LoginPage'
 import StudentHomePage from './pages/student/StudentHomePage'
 import StudentGettingStartedPage from './pages/student/StudentGettingStartedPage'
@@ -61,13 +62,18 @@ export default function App() {
             <Route path="/professor/syllabus-tips" element={<ProfessorSyllabusTipsPage />} />
             <Route path="/professor/contact-coordinator" element={<ProfessorContactPage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/courses" element={<CourseBrowserPage />} />
-            <Route path="/catalog-match" element={<CatalogMatchPage />} />
+            <Route path="/courses" element={<CourseBrowserPage portal="university" />} />
+            <Route path="/catalog-match" element={<CatalogMatchPage portal="university" />} />
             <Route path="/match" element={<MatchingPage />} />
             <Route path="/batch" element={<BatchEvaluationPage />} />
             <Route path="/transcript" element={<TranscriptUploadPage />} />
             <Route path="/resources" element={<ResourcesPage />} />
-            <Route path="*" element={<NotFoundPage />} />
+            <Route path="/student/catalog" element={<CourseBrowserPage portal="student" />} />
+            <Route path="/student/quick-match" element={<CatalogMatchPage portal="student" />} />
+            <Route path="/student/resources" element={<StudentResourcesPage />} />
+            <Route path="/professor/catalog" element={<CourseBrowserPage portal="faculty" />} />
+            <Route path="/professor/quick-match" element={<CatalogMatchPage portal="faculty" />} />
+            <Route path="/professor/resources" element={<ProfessorResourcesPage />} />
           </Route>
         </Route>
       </Route>
