@@ -23,6 +23,8 @@ COPY api/ ./api/
 COPY core/ ./core/
 COPY models/ ./models/
 COPY data/ ./data/
+# Root-level module imported by core/matcher.py (not under core/)
+COPY local_matcher.py ./
 COPY --from=frontend /app/frontend/dist ./frontend/dist
 
 ENV PYTHONUNBUFFERED=1
