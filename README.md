@@ -273,6 +273,10 @@ This is a standalone Python microservice. The frontend team should:
 2. Use `POST /match/single` or `POST /match/batch` for evaluations
 3. Display results with similarity scores and rationales
 
+## ☁️ Deploy (Railway)
+
+The repo includes a **Dockerfile** and **railway.toml** for a single-service deploy (built SPA + API under `/api`). Environment variables and health checks are documented in [RAILWAY.md](./RAILWAY.md).
+
 ## 📄 License
 
 Internal use - ProcessMaker / Duke AIPI Capstone Project

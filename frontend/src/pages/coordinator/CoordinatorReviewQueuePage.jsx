@@ -19,7 +19,7 @@ export default function CoordinatorReviewQueuePage() {
       title="Review queue"
       subtitle="This table is static. Connect Supabase to show real pending evaluations and assignments."
       breadcrumbs={[
-        { to: '/coordinator', label: 'Coordinator' },
+        { to: '/coordinator', label: 'University' },
         { label: 'Review queue' },
       ]}
     >

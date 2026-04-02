@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useState } from 'react'
 import { findHardcodedUser } from './hardcodedUsers'
-import { defaultPathForRole, isValidRole, parseRoleParam } from './roles'
+import { ROLE_META, defaultPathForRole, isValidRole, parseRoleParam } from './roles'
 
 const STORAGE_KEY = 'cc_session_user'
 
@@ -31,6 +31,14 @@ export function AuthProvider({ children }) {
     const found = findHardcodedUser(username.trim(), password)
     if (!found) {
       return { ok: false, error: 'Invalid username or password.' }
+    }
+    const allowed = found.allowedRoles
+    if (allowed?.length && !allowed.includes(role)) {
+      const names = allowed.map((r) => ROLE_META[r]?.shortLabel ?? r).join(', ')
+      return {
+        ok: false,
+        error: `This account is only for: ${names}. Pick that portal above or use demo (any role).`,
+      }
     }
     const session = {
       id: found.id,

@@ -39,6 +39,18 @@ const cards = [
       </svg>
     ),
   },
+  {
+    role: 'admin',
+    icon: (
+      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"
+        />
+      </svg>
+    ),
+  },
 ]
 
 export default function LandingPage() {
@@ -79,8 +91,9 @@ export default function LandingPage() {
         <div className="cc-hero px-8 py-14 sm:px-12 sm:py-16 mb-14">
           <h1 className="cc-large-title font-display max-w-xl">Transfer credit evaluation for everyone involved.</h1>
           <p className="mt-6 text-[19px] leading-relaxed text-[var(--cc-label-secondary)] max-w-2xl">
-            Choose how you work with Course Co-Pilot today. Each experience is tailored for students, university
-            coordinators, and faculty — with the same powerful matching engine under the hood.
+            Each role signs into a different surface: students never see batch or staff dashboards; university staff
+            and admins do not enter the student transcript portal; faculty get syllabus tools only — same API behind
+            the scenes.
           </p>
           {!user && (
             <p className="mt-4 cc-footnote">
@@ -90,7 +103,7 @@ export default function LandingPage() {
         </div>
 
         <h2 className="cc-title-2 font-display mb-6">Choose your role</h2>
-        <div className="grid md:grid-cols-3 gap-5">
+        <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-5">
           {cards.map(({ role, icon }) => {
             const meta = ROLE_META[role]
             return (
@@ -114,10 +127,10 @@ export default function LandingPage() {
         </div>
 
         <div className="mt-16 cc-card p-8 text-center">
-          <p className="text-[17px] text-[var(--cc-label)] font-medium">Already know the tools?</p>
+          <p className="text-[17px] text-[var(--cc-label)] font-medium">Staff and faculty</p>
           <p className="cc-footnote mt-2 max-w-lg mx-auto">
-            After you sign in, use <strong className="text-[var(--cc-label)]">All tools</strong> in the header for the
-            full catalog, batch runs, and API-linked workflows.
+            University and admin roles get <strong className="text-[var(--cc-label)]">All tools</strong> (workbench) in
+            the header; students stay on transcript, quick match, and catalog only.
           </p>
         </div>
       </main>

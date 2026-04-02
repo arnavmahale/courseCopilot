@@ -2,7 +2,7 @@ import PageContainer from '../../components/layout/PageContainer'
 import StakeholderNav from '../../components/stakeholders/StakeholderNav'
 
 const navItems = [
-  { to: '/student', label: 'Overview', end: true },
+  { to: '/student', label: 'Transcript', end: true },
   { to: '/student/getting-started', label: 'Getting started' },
   { to: '/student/faq', label: 'FAQ' },
 ]

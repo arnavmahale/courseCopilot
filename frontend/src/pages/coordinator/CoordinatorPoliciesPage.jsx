@@ -20,7 +20,7 @@ export default function CoordinatorPoliciesPage() {
       title="Policies & reference"
       subtitle="Static guidance for demo use. Replace with your official handbook or CMS-driven content later."
       breadcrumbs={[
-        { to: '/coordinator', label: 'Coordinator' },
+        { to: '/coordinator', label: 'University' },
         { label: 'Policies' },
       ]}
     >

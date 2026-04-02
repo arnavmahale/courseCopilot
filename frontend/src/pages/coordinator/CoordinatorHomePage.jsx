@@ -18,9 +18,9 @@ const tools = [
 export default function CoordinatorHomePage() {
   return (
     <PageContainer
-      title="Coordinator console"
-      subtitle="Operational tools for transfer articulation teams. Live items use your running API; queue and policy pages are static until Supabase and workflows are connected."
-      breadcrumbs={[{ label: 'Coordinator' }]}
+      title="University console"
+      subtitle="Operational tools for transfer articulation and evaluators. Live items use your running API; queue and policy pages are static until Supabase and workflows are connected."
+      breadcrumbs={[{ label: 'University' }]}
     >
       <StakeholderNav items={navItems} />
 

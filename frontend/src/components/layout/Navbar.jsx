@@ -10,11 +10,9 @@ function buildNavItems(role, roleHomePath) {
 
   if (role === 'student') {
     return [
-      { to: roleHomePath, label: 'Student', end: true },
-      { to: '/transcript', label: 'Transcript' },
+      { to: roleHomePath, label: 'Transcript', end: true },
       { to: '/catalog-match', label: 'Quick match' },
       { to: '/courses', label: 'Catalog' },
-      workbench,
       resources,
     ]
   }
@@ -28,9 +26,20 @@ function buildNavItems(role, roleHomePath) {
       resources,
     ]
   }
-  // coordinator default
+  if (role === 'admin') {
+    return [
+      { to: roleHomePath, label: 'Admin', end: true },
+      { to: '/dashboard', label: 'Dashboard' },
+      { to: '/batch', label: 'Batch' },
+      { to: '/courses', label: 'Catalog' },
+      { to: '/catalog-match', label: 'Quick match' },
+      workbench,
+      resources,
+    ]
+  }
+  // coordinator (university / evaluator)
   return [
-    { to: roleHomePath, label: 'Coordinator', end: true },
+    { to: roleHomePath, label: 'University', end: true },
     { to: '/dashboard', label: 'Dashboard' },
     { to: '/batch', label: 'Batch' },
     { to: '/courses', label: 'Catalog' },

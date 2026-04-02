@@ -2,9 +2,13 @@
 Course Co-Pilot API
 FastAPI application for transfer credit evaluation
 """
+import os
+from pathlib import Path
+
 from fastapi import FastAPI, HTTPException, UploadFile, File, Form, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 import json
@@ -26,8 +30,8 @@ from models.schemas import (
 )
 
 
-# Initialize FastAPI app
-app = FastAPI(
+# API app (mounted at /api in production when static frontend is present)
+api_app = FastAPI(
     title="Course Co-Pilot API",
     description="In-house transfer credit evaluation system using local ML models",
     version="2.0.0",
@@ -36,7 +40,7 @@ app = FastAPI(
 )
 
 # CORS middleware for frontend integration
-app.add_middleware(
+api_app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Configure appropriately for production
     allow_credentials=True,
@@ -83,7 +87,7 @@ class HealthResponse(BaseModel):
 
 # ============== Startup/Shutdown ==============
 
-@app.on_event("startup")
+@api_app.on_event("startup")
 async def startup_event():
     """Initialize components on startup"""
     global similarity_engine, data_loader, pipeline
@@ -127,7 +131,7 @@ async def startup_event():
 
 # ============== Endpoints ==============
 
-@app.get("/", tags=["General"])
+@api_app.get("/", tags=["General"])
 async def root():
     """Root endpoint with API information"""
     return {
@@ -139,7 +143,7 @@ async def root():
     }
 
 
-@app.get("/health", response_model=HealthResponse, tags=["General"])
+@api_app.get("/health", response_model=HealthResponse, tags=["General"])
 async def health_check():
     """Health check endpoint"""
     source_count = 0
@@ -157,7 +161,7 @@ async def health_check():
     )
 
 
-@app.post("/data/load", tags=["Data Management"])
+@api_app.post("/data/load", tags=["Data Management"])
 async def load_data(request: LoadDataRequest):
     """Load course data from CSV file"""
     global data_loader
@@ -179,7 +183,7 @@ async def load_data(request: LoadDataRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.get("/courses", response_model=CourseListResponse, tags=["Courses"])
+@api_app.get("/courses", response_model=CourseListResponse, tags=["Courses"])
 async def list_courses(university: Optional[str] = None):
     """List all loaded courses, optionally filtered by university"""
     if not data_loader:
@@ -197,7 +201,7 @@ async def list_courses(university: Optional[str] = None):
     )
 
 
-@app.get("/courses/source", tags=["Courses"])
+@api_app.get("/courses/source", tags=["Courses"])
 async def list_source_courses(university: Optional[str] = None):
     """List courses from source university"""
     if not data_loader:
@@ -220,7 +224,7 @@ async def list_source_courses(university: Optional[str] = None):
     }
 
 
-@app.get("/courses/target", tags=["Courses"])
+@api_app.get("/courses/target", tags=["Courses"])
 async def list_target_courses(university: Optional[str] = None):
     """List courses from target university"""
     if not data_loader:
@@ -243,7 +247,7 @@ async def list_target_courses(university: Optional[str] = None):
     }
 
 
-@app.get("/courses/{course_id}", tags=["Courses"])
+@api_app.get("/courses/{course_id}", tags=["Courses"])
 async def get_course(course_id: str):
     """Get details of a specific course by ID (file_name)"""
     if not data_loader:
@@ -256,7 +260,7 @@ async def get_course(course_id: str):
     return course.model_dump()
 
 
-@app.post("/match/single", tags=["Matching"])
+@api_app.post("/match/single", tags=["Matching"])
 async def match_single_course(request: MatchRequest):
     """Find matches for a single source course"""
     if not data_loader:
@@ -285,7 +289,7 @@ async def match_single_course(request: MatchRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/match/batch", tags=["Matching"])
+@api_app.post("/match/batch", tags=["Matching"])
 async def match_batch_courses(request: BatchMatchRequest):
     """Find matches for multiple source courses"""
     if not data_loader:
@@ -341,7 +345,7 @@ async def match_batch_courses(request: BatchMatchRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/evaluate", response_model=EvaluationResponse, tags=["Matching"])
+@api_app.post("/evaluate", response_model=EvaluationResponse, tags=["Matching"])
 async def evaluate_transfer(request: EvaluationRequest):
     """
     Complete transfer credit evaluation
@@ -394,7 +398,7 @@ async def evaluate_transfer(request: EvaluationRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/match/custom", tags=["Matching"])
+@api_app.post("/match/custom", tags=["Matching"])
 async def match_custom_syllabus(request: CustomSyllabusRequest):
     """
     Match a custom syllabus (NOT in the dataset) against target university catalog.
@@ -447,7 +451,7 @@ class ScrapeRequest(BaseModel):
     merge: bool = True  # Merge with current loaded dataset
 
 
-@app.post("/catalog/scrape", tags=["Catalog Scraping"])
+@api_app.post("/catalog/scrape", tags=["Catalog Scraping"])
 async def scrape_catalog(request: ScrapeRequest, background_tasks: BackgroundTasks):
     """
     Scrape a university's course catalog and load it into the system.
@@ -512,7 +516,7 @@ async def scrape_catalog(request: ScrapeRequest, background_tasks: BackgroundTas
         raise HTTPException(status_code=500, detail=f"Scraping error: {str(e)}")
 
 
-@app.get("/catalog/universities", tags=["Catalog Scraping"])
+@api_app.get("/catalog/universities", tags=["Catalog Scraping"])
 async def list_scrapeable_universities():
     """List universities that can be automatically scraped"""
     from utils.catalog_scraper import UNIVERSITY_REGISTRY
@@ -528,7 +532,7 @@ async def list_scrapeable_universities():
     }
 
 
-@app.get("/catalog/subjects/{university}", tags=["Catalog Scraping"])
+@api_app.get("/catalog/subjects/{university}", tags=["Catalog Scraping"])
 async def list_catalog_subjects(university: str):
     """List available subject codes for a university's catalog"""
     from utils.catalog_scraper import get_provider, UNIVERSITY_REGISTRY
@@ -544,7 +548,7 @@ async def list_catalog_subjects(university: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.get("/universities", tags=["General"])
+@api_app.get("/universities", tags=["General"])
 async def list_universities():
     """List all universities available in the loaded dataset"""
     if not data_loader:
@@ -557,7 +561,7 @@ async def list_universities():
     }
 
 
-@app.get("/statistics", tags=["General"])
+@api_app.get("/statistics", tags=["General"])
 async def get_statistics():
     """Get statistics about loaded data"""
     if not data_loader:
@@ -569,7 +573,7 @@ async def get_statistics():
 # ============== On-Demand Pipeline ==============
 
 
-@app.post("/pipeline/evaluate", response_model=PipelineResponse, tags=["Pipeline"])
+@api_app.post("/pipeline/evaluate", response_model=PipelineResponse, tags=["Pipeline"])
 async def pipeline_evaluate(request: PipelineRequest):
     """
     On-demand transfer credit evaluation.
@@ -593,7 +597,7 @@ async def pipeline_evaluate(request: PipelineRequest):
         raise HTTPException(status_code=500, detail=f"Pipeline error: {str(e)}")
 
 
-@app.post("/pipeline/transcript-evaluate", tags=["Pipeline"])
+@api_app.post("/pipeline/transcript-evaluate", tags=["Pipeline"])
 async def pipeline_transcript_evaluate(
     file: UploadFile = File(..., description="Transcript PDF file"),
     target_university: str = Form("Duke", description="Target university name"),
@@ -633,7 +637,7 @@ async def pipeline_transcript_evaluate(
         raise HTTPException(status_code=500, detail=f"Transcript evaluation error: {str(e)}")
 
 
-@app.post("/pipeline/transcript-evaluate-stream", tags=["Pipeline"])
+@api_app.post("/pipeline/transcript-evaluate-stream", tags=["Pipeline"])
 async def pipeline_transcript_evaluate_stream(
     file: UploadFile = File(..., description="Transcript PDF file"),
     target_university: str = Form("Duke", description="Target university name"),
@@ -698,7 +702,7 @@ async def pipeline_transcript_evaluate_stream(
     )
 
 
-@app.delete("/pipeline/cache", tags=["Pipeline"])
+@api_app.delete("/pipeline/cache", tags=["Pipeline"])
 async def clear_pipeline_cache(university: Optional[str] = None):
     """Clear cached catalog data for a university or all universities."""
     catalog_cache.invalidate(university)
@@ -707,7 +711,7 @@ async def clear_pipeline_cache(university: Optional[str] = None):
 
 # ============== Error Handlers ==============
 
-@app.exception_handler(Exception)
+@api_app.exception_handler(Exception)
 async def general_exception_handler(request, exc):
     return JSONResponse(
         status_code=500,
@@ -715,8 +719,54 @@ async def general_exception_handler(request, exc):
     )
 
 
+# ============== Combined ASGI app (API + optional static SPA) ==============
+
+
+def create_combined_app() -> FastAPI:
+    """
+    When frontend/dist exists (e.g. Railway/Docker), serve the SPA at / and mount
+    JSON routes at /api so React paths like /courses do not collide with GET /courses.
+    Without dist, expose api_app at / for local uvicorn + Vite dev proxy.
+    """
+    dist = Path(__file__).resolve().parent.parent / "frontend" / "dist"
+    if not dist.is_dir():
+        return api_app
+
+    root = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
+
+    @root.get("/health")
+    async def root_health():
+        return {"status": "ok"}
+
+    root.mount("/api", api_app)
+
+    assets = dist / "assets"
+    if assets.is_dir():
+        root.mount("/assets", StaticFiles(directory=assets), name="assets")
+
+    @root.get("/")
+    async def spa_index():
+        return FileResponse(dist / "index.html")
+
+    @root.get("/{full_path:path}")
+    async def spa_fallback(full_path: str):
+        if full_path.startswith("api"):
+            raise HTTPException(status_code=404, detail="Not found")
+        f = dist / full_path
+        if f.is_file():
+            return FileResponse(f)
+        return FileResponse(dist / "index.html")
+
+    return root
+
+
+app = create_combined_app()
+
+
 # ============== Run Server ==============
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+
+    port = int(os.environ.get("PORT", "8000"))
+    uvicorn.run(app, host="0.0.0.0", port=port)

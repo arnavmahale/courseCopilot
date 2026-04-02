@@ -3,27 +3,27 @@ import StakeholderNav from '../../components/stakeholders/StakeholderNav'
 import { Link } from 'react-router-dom'
 
 const navItems = [
-  { to: '/student', label: 'Overview', end: true },
+  { to: '/student', label: 'Transcript', end: true },
   { to: '/student/getting-started', label: 'Getting started' },
   { to: '/student/faq', label: 'FAQ' },
 ]
 
 const steps = [
   {
-    title: 'Confirm your target school',
-    body: 'Know where you are transferring. Quick match and the catalog need the correct target university name to match rows in your dataset.',
+    title: 'Upload your transcript',
+    body: 'On the Transcript tab, add your PDF and the school you are transferring into, then run the evaluation when your server has the pipeline configured.',
   },
   {
-    title: 'Try a quick match',
-    body: 'If your course exists in the CSV, use Quick match to see ranked equivalents and rationales immediately.',
+    title: 'Confirm the target school name',
+    body: 'The name must match your dataset (e.g. how Duke appears in the CSV). Wrong spelling often means empty matches.',
   },
   {
-    title: 'Upload a transcript (optional)',
-    body: 'When the transcript pipeline is enabled on the server, you can upload a PDF for a guided multi-course review.',
+    title: 'Try quick match for one course',
+    body: 'If you only need a single course checked, Quick match ranks equivalents and shows rationales without a full PDF.',
   },
   {
     title: 'Talk to your coordinator',
-    body: 'Automated scores support humans — final decisions stay with your institution. This step will link to real messaging after Supabase is added.',
+    body: 'Scores are decision-support only. Final articulation stays with your institution; messaging will connect here after Supabase.',
   },
 ]
 
@@ -56,9 +56,12 @@ export default function StudentGettingStartedPage() {
         ))}
       </ol>
 
-      <div className="mt-12">
-        <Link to="/catalog-match" className="cc-btn-primary">
-          Try quick match
+      <div className="mt-12 flex flex-wrap gap-3">
+        <Link to="/student" className="cc-btn-primary">
+          Upload transcript
+        </Link>
+        <Link to="/catalog-match" className="cc-btn-secondary px-5 py-2.5">
+          Quick match
         </Link>
       </div>
     </PageContainer>

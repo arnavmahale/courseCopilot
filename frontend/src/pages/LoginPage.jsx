@@ -3,6 +3,7 @@ import { useNavigate, useLocation, Link, useSearchParams } from 'react-router-do
 import { useAuth } from '../auth/AuthContext'
 import { HARDCODED_USERS, DEMO_PASSWORD } from '../auth/hardcodedUsers'
 import { ROLE_IDS, ROLE_META, defaultPathForRole, parseRoleParam } from '../auth/roles'
+import { isPathForbiddenForRole } from '../auth/routeAccess'
 
 export default function LoginPage() {
   const { login, user, ready } = useAuth()
@@ -22,8 +23,9 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (!ready || !user) return
-    const safeFrom =
+    const candidate =
       from && from !== '/login' && !from.startsWith('/login') ? from : defaultPathForRole(user.role)
+    const safeFrom = isPathForbiddenForRole(user.role, candidate) ? defaultPathForRole(user.role) : candidate
     navigate(safeFrom, { replace: true })
   }, [ready, user, navigate, from])
 
@@ -137,8 +139,9 @@ export default function LoginPage() {
           <div className="mt-10 pt-8 border-t border-[var(--cc-separator)]">
             <p className="text-[13px] font-medium text-[var(--cc-label)] mb-1">Demo accounts</p>
             <p className="cc-footnote mb-5">
-              Password for all: <span className="font-mono text-[var(--cc-label)]">{DEMO_PASSWORD}</span>. Try{' '}
-              <span className="font-mono">username</span> / <span className="font-mono">password</span>.
+              Password for all: <span className="font-mono text-[var(--cc-label)]">{DEMO_PASSWORD}</span>.{' '}
+              <span className="font-mono">username</span> works with <strong>any</strong> portal tab; evaluator, student,
+              faculty, and admin demo accounts only work when that matching role is selected above.
             </p>
             <ul className="space-y-2">
               {HARDCODED_USERS.map((u) => (

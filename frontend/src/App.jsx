@@ -1,6 +1,7 @@
 import { Routes, Route, Outlet } from 'react-router-dom'
 import Navbar from './components/layout/Navbar'
 import ProtectedRoute from './components/auth/ProtectedRoute'
+import RoleAccessGuard from './components/auth/RoleAccessGuard'
 import LandingPage from './pages/LandingPage'
 import HomePage from './pages/HomePage'
 import DashboardPage from './pages/DashboardPage'
@@ -48,24 +49,26 @@ export default function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
-          <Route path="/workbench" element={<HomePage />} />
-          <Route path="/student" element={<StudentHomePage />} />
-          <Route path="/student/getting-started" element={<StudentGettingStartedPage />} />
-          <Route path="/student/faq" element={<StudentFaqPage />} />
-          <Route path="/coordinator" element={<CoordinatorHomePage />} />
-          <Route path="/coordinator/review-queue" element={<CoordinatorReviewQueuePage />} />
-          <Route path="/coordinator/policies" element={<CoordinatorPoliciesPage />} />
-          <Route path="/professor" element={<ProfessorHomePage />} />
-          <Route path="/professor/syllabus-tips" element={<ProfessorSyllabusTipsPage />} />
-          <Route path="/professor/contact-coordinator" element={<ProfessorContactPage />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/courses" element={<CourseBrowserPage />} />
-          <Route path="/catalog-match" element={<CatalogMatchPage />} />
-          <Route path="/match" element={<MatchingPage />} />
-          <Route path="/batch" element={<BatchEvaluationPage />} />
-          <Route path="/transcript" element={<TranscriptUploadPage />} />
-          <Route path="/resources" element={<ResourcesPage />} />
-          <Route path="*" element={<NotFoundPage />} />
+          <Route element={<RoleAccessGuard />}>
+            <Route path="/workbench" element={<HomePage />} />
+            <Route path="/student" element={<StudentHomePage />} />
+            <Route path="/student/getting-started" element={<StudentGettingStartedPage />} />
+            <Route path="/student/faq" element={<StudentFaqPage />} />
+            <Route path="/coordinator" element={<CoordinatorHomePage />} />
+            <Route path="/coordinator/review-queue" element={<CoordinatorReviewQueuePage />} />
+            <Route path="/coordinator/policies" element={<CoordinatorPoliciesPage />} />
+            <Route path="/professor" element={<ProfessorHomePage />} />
+            <Route path="/professor/syllabus-tips" element={<ProfessorSyllabusTipsPage />} />
+            <Route path="/professor/contact-coordinator" element={<ProfessorContactPage />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/courses" element={<CourseBrowserPage />} />
+            <Route path="/catalog-match" element={<CatalogMatchPage />} />
+            <Route path="/match" element={<MatchingPage />} />
+            <Route path="/batch" element={<BatchEvaluationPage />} />
+            <Route path="/transcript" element={<TranscriptUploadPage />} />
+            <Route path="/resources" element={<ResourcesPage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Route>
         </Route>
       </Route>
     </Routes>
