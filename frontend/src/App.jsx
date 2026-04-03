@@ -14,6 +14,7 @@ import ResourcesPage from './pages/ResourcesPage'
 import StudentResourcesPage from './pages/student/StudentResourcesPage'
 import ProfessorResourcesPage from './pages/professor/ProfessorResourcesPage'
 import LoginPage from './pages/LoginPage'
+import StudentSignupPage from './pages/StudentSignupPage'
 import StudentHomePage from './pages/student/StudentHomePage'
 import StudentGettingStartedPage from './pages/student/StudentGettingStartedPage'
 import StudentFaqPage from './pages/student/StudentFaqPage'
@@ -52,6 +53,7 @@ export default function App() {
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<StudentSignupPage />} />
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
           <Route element={<RoleAccessGuard />}>

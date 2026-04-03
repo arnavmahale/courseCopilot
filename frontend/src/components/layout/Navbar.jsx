@@ -41,7 +41,7 @@ function buildNavItems(role, roleHomePath) {
       resources,
     ]
   }
-  // coordinator (university / evaluator)
+  // coordinator + university (same surfaces; RLS distinguishes roles)
   return [
     { to: roleHomePath, label: 'University', end: true },
     { to: '/coordinator/operations', label: 'Ops' },

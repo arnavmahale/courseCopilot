@@ -16,13 +16,25 @@ const cards = [
     ),
   },
   {
-    role: 'coordinator',
+    role: 'university',
     icon: (
       <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
           d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+        />
+      </svg>
+    ),
+  },
+  {
+    role: 'coordinator',
+    icon: (
+      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M12 6v12m-3-9h6m-8 4h10M9 3h6l1 3h3v2H5V6l1-3z"
         />
       </svg>
     ),
@@ -103,7 +115,7 @@ export default function LandingPage() {
         </div>
 
         <h2 className="cc-title-2 font-display mb-6">Choose your role</h2>
-        <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-5">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
           {cards.map(({ role, icon }) => {
             const meta = ROLE_META[role]
             return (
