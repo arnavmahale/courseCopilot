@@ -1,0 +1,12 @@
+# Use when this Railway service has Root Directory set to `frontend`.
+# https://docs.railway.com/guides/monorepo#deploying-a-subdirectory
+
+[build]
+builder = "RAILPACK"
+buildCommand = "npm ci && npm run build"
+
+[deploy]
+startCommand = "npm run start"
+healthcheckPath = "/"
+healthcheckTimeout = 100
+restartPolicyType = "ON_FAILURE"
