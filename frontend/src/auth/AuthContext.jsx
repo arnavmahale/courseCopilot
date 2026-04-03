@@ -29,8 +29,23 @@ async function fetchProfileRow(userId) {
     .select('role, display_name, email')
     .eq('id', userId)
     .maybeSingle()
-  if (error || !data) return null
-  return data
+  if (error) {
+    if (import.meta.env.DEV) console.warn('[auth] profiles select failed', error.message, error)
+    return null
+  }
+  return data ?? null
+}
+
+/** Session must be visible to PostgREST before RLS can evaluate auth.uid() on profiles. */
+async function fetchProfileAfterSignIn(userId) {
+  if (!supabase) return null
+  await supabase.auth.getSession()
+  let profile = await fetchProfileRow(userId)
+  if (!profile) {
+    await new Promise((r) => setTimeout(r, 200))
+    profile = await fetchProfileRow(userId)
+  }
+  return profile
 }
 
 function userFromSupabaseSession(authUser, profile) {
@@ -65,7 +80,7 @@ export function AuthProvider({ children }) {
         if (!cancelled) setUser(null)
         return
       }
-      const profile = await fetchProfileRow(session.user.id)
+      const profile = await fetchProfileAfterSignIn(session.user.id)
       if (cancelled) return
       if (!profile || !isValidRole(profile.role)) {
         setUser(null)
@@ -105,12 +120,13 @@ export function AuthProvider({ children }) {
       })
       supabaseAuthError = error
       if (!error && data?.user) {
-        const profile = await fetchProfileRow(data.user.id)
+        const profile = await fetchProfileAfterSignIn(data.user.id)
         if (!profile) {
           await supabase.auth.signOut()
           return {
             ok: false,
-            error: 'Account exists but has no profile. Complete setup on the server or contact your administrator.',
+            error:
+              'Account exists but has no profile row (or it could not be loaded yet). In Supabase → SQL Editor, run supabase/migrations/006_ensure_seed_profiles.sql to upsert demo profiles, then try again.',
           }
         }
         if (!isValidRole(profile.role)) {
