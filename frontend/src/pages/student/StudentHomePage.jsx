@@ -90,20 +90,25 @@ export default function StudentHomePage() {
           Student dashboard
         </p>
         <h1 className="cc-large-title font-display max-w-3xl">Transfer credit workspace</h1>
-        <p className="mt-4 text-[19px] leading-relaxed text-[var(--cc-label-secondary)] max-w-3xl">
-          Run the transcript pipeline, track saved results, and see deadlines from your school. Data persists in the
-          browser for demo logins; connect <strong className="text-[var(--cc-label)]">Supabase</strong> with real auth
-          UUIDs for production storage and staff workflows.
-        </p>
-        {isSupabaseConfigured && (
-          <p className="mt-3 text-[13px] text-[#34c759] font-medium">Supabase env detected — cloud sync enabled for UUID accounts.</p>
-        )}
-        {!isSupabaseConfigured && (
-          <p className="mt-3 cc-footnote">
-            Add <code className="font-mono text-[12px]">VITE_SUPABASE_URL</code> and{' '}
-            <code className="font-mono text-[12px]">VITE_SUPABASE_ANON_KEY</code> to unlock university & professor
-            dashboards against the same database.
+        {isSupabaseConfigured ? (
+          <p className="mt-4 text-[19px] leading-relaxed text-[var(--cc-label-secondary)] max-w-3xl">
+            Run the transcript pipeline, track saved evaluations, and see deadlines. Signed-in users with Supabase Auth
+            sync data to your project; demo IDs still use the browser until you use real UUID accounts.
           </p>
+        ) : (
+          <>
+            <p className="mt-4 text-[19px] leading-relaxed text-[var(--cc-label-secondary)] max-w-3xl">
+              Run the transcript pipeline and track runs here. Without Supabase, saves stay in{' '}
+              <strong className="text-[var(--cc-label)]">this browser only</strong> (demo logins).
+            </p>
+            <p className="mt-3 cc-footnote max-w-3xl">
+              To store data in the cloud and power university / professor dashboards, add these to your{' '}
+              <strong>frontend</strong> build env (e.g. Railway → frontend service → Variables), then redeploy:{' '}
+              <code className="font-mono text-[12px]">VITE_SUPABASE_URL</code>,{' '}
+              <code className="font-mono text-[12px]">VITE_SUPABASE_ANON_KEY</code> (from Supabase → Project Settings →
+              API).
+            </p>
+          </>
         )}
       </div>
 
