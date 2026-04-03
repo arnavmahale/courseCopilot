@@ -85,6 +85,39 @@ function userFromSupabaseSession(authUser, profile) {
   }
 }
 
+/** Role + name from Supabase Auth only (seed SQL sets raw_user_meta_data → user_metadata). No DB read. */
+function userFromAuthMetadata(authUser) {
+  if (!authUser) return null
+  const meta = authUser.user_metadata || {}
+  const role = typeof meta.role === 'string' ? meta.role.trim() : ''
+  if (!isValidRole(role)) return null
+  const email = authUser.email || ''
+  const displayName =
+    (typeof meta.full_name === 'string' && meta.full_name.trim()) ||
+    (typeof meta.name === 'string' && meta.name.trim()) ||
+    email.split('@')[0] ||
+    'User'
+  return {
+    id: authUser.id,
+    username: email,
+    displayName,
+    role,
+    authSource: 'supabase',
+  }
+}
+
+/** Prefer `profiles` when PostgREST returns it; otherwise use JWT user_metadata (same as SQL seed roles). */
+async function resolveSessionUser(authUser, session) {
+  let profile = null
+  if (session?.access_token && session?.refresh_token) {
+    profile = await loadProfileWithSession(session)
+  }
+  if (profile && isValidRole(profile.role)) {
+    return userFromSupabaseSession(authUser, profile)
+  }
+  return userFromAuthMetadata(authUser)
+}
+
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
@@ -106,13 +139,13 @@ export function AuthProvider({ children }) {
         if (!cancelled) setUser(null)
         return
       }
-      const profile = await loadProfileWithSession(session)
+      const sessionUser = await resolveSessionUser(session.user, session)
       if (cancelled) return
-      if (!profile || !isValidRole(profile.role)) {
+      if (!sessionUser) {
         setUser(null)
         return
       }
-      setUser(userFromSupabaseSession(session.user, profile))
+      setUser(sessionUser)
     }
 
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -150,28 +183,23 @@ export function AuthProvider({ children }) {
         if (!session) {
           supabaseAuthError = { message: 'No session returned after sign-in.' }
         } else {
-          const profile = await loadProfileWithSession(session)
-          if (!profile) {
+          const sessionUser = await resolveSessionUser(data.user, session)
+          if (!sessionUser) {
             await supabase.auth.signOut()
             return {
               ok: false,
               error:
-                'Could not load your profile after sign-in. In Supabase → SQL, run 007_get_my_profile_rpc.sql (recommended) and ensure 006_ensure_seed_profiles.sql has been applied.',
+                'Sign-in worked, but this account has no role on file. Use a seeded test account, student sign-up, or ask an admin to set your role.',
             }
           }
-          if (!isValidRole(profile.role)) {
+          if (sessionUser.role !== role) {
             await supabase.auth.signOut()
-            return { ok: false, error: `Unknown role "${profile.role}" in profile.` }
-          }
-          if (profile.role !== role) {
-            await supabase.auth.signOut()
-            const label = ROLE_META[profile.role]?.shortLabel ?? profile.role
+            const label = ROLE_META[sessionUser.role]?.shortLabel ?? sessionUser.role
             return {
               ok: false,
               error: `This account is for “${label}”. Choose that portal tab above, then sign in again.`,
             }
           }
-          const sessionUser = userFromSupabaseSession(data.user, profile)
           setUser(sessionUser)
           return { ok: true, role: sessionUser.role }
         }
