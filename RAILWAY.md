@@ -21,7 +21,9 @@ When you want **separate** API and frontend URLs (e.g. Railpack for API only):
 
 2. **Frontend service** — service root **`frontend`** (important so Railpack does not pick Python at repo root).  
    Use `frontend/railway.toml`: build is **`npm run build` only** (avoid a second `npm ci` or Vite can hit `EBUSY` on `node_modules/.vite`). Start with `npm run start` (serves `dist/`).  
-   Set **`VITE_API_URL`** to your public API base URL (no trailing `/api` unless that is how your client is written — see `frontend/src/api/client.js`).
+   Set **`VITE_API_URL`** on the **frontend** service **before** deploy — Vite inlines it at **build** time. Use your public API base URL with **no trailing slash** (see `frontend/src/api/client.js`). For a dedicated API service (routes at `/pipeline/...` on the host root), use `https://your-api.up.railway.app`. Wrong or missing values often show up as SSE failing and the UI falling back to a long non-streaming request.
+
+3. **API service CORS** — On the **API** service, set **`CORS_ALLOWED_ORIGINS`** to your frontend public URL(s), comma-separated (e.g. `https://your-app.up.railway.app,http://localhost:5173`). This avoids invalid `*` + credentials behavior and keeps cross-origin `fetch`/axios working. Omit it only if you are fine with allow-all and no credentialed cookie CORS.
 
 **Health checks:** API `GET /health`; frontend `GET /` (see `frontend/railway.toml`).
 
@@ -33,7 +35,8 @@ When you want **separate** API and frontend URLs (e.g. Railpack for API only):
 | `OPENAI_API_KEY` | For transcript / research | Pipeline and agents (`core.config`). |
 | `DEBUG` | No | Use `false` in production. |
 | `DEFAULT_CSV_PATH` | No | CSV inside container; default `data/syllabus_dataset.csv`. |
-| `VITE_API_URL` | Split frontend only | Browser → API origin. |
+| `VITE_API_URL` | Split frontend only | Baked in at **build**; browser → API origin (no trailing slash). |
+| `CORS_ALLOWED_ORIGINS` | Split API recommended | Comma-separated frontend URL(s); see Option B step 3. |
 | `VITE_SUPABASE_*` | Optional | Student/coordinator workflows (see `frontend/.env.example`). |
 
 Optional tuning: `TOP_N_MATCHES`, `SIMILARITY_THRESHOLD`, model names — see `core/config.py`.

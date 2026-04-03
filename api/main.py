@@ -45,11 +45,20 @@ api_app = FastAPI(
     redoc_url="/redoc",
 )
 
-# CORS middleware for frontend integration
+# CORS: wildcard + credentials is invalid in browsers. Explicit origins enable credentials.
+def _cors_config():
+    raw = (settings.cors_allowed_origins or "").strip()
+    if raw:
+        origins = [o.strip() for o in raw.split(",") if o.strip()]
+        return {"allow_origins": origins, "allow_credentials": True}
+    return {"allow_origins": ["*"], "allow_credentials": False}
+
+
+_cors = _cors_config()
 api_app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Configure appropriately for production
-    allow_credentials=True,
+    allow_origins=_cors["allow_origins"],
+    allow_credentials=_cors["allow_credentials"],
     allow_methods=["*"],
     allow_headers=["*"],
 )

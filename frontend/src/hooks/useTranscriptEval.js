@@ -71,7 +71,11 @@ export default function useTranscriptEval() {
       }
 
       if (import.meta.env.DEV) {
-        console.warn('[transcript] SSE failed, using non-streaming POST:', streamErr)
+        console.warn(
+          '[transcript] SSE failed, using non-streaming POST:',
+          streamErr,
+          '| Check VITE_API_URL at build time, API CORS (CORS_ALLOWED_ORIGINS), and trailing slashes.',
+        )
       }
 
       try {
@@ -80,7 +84,7 @@ export default function useTranscriptEval() {
           current: 0,
           total: 0,
           message:
-            'POST /pipeline/transcript-evaluate (non-streaming). Redeploy frontend with fixed VITE_API_URL and ensure API allows your site origin if you still see this.',
+            'Live progress unavailable — running full evaluation in the background (this may take several minutes).',
         })
         const res = await api.post('/pipeline/transcript-evaluate', formData, {
           headers: { 'Content-Type': 'multipart/form-data' },

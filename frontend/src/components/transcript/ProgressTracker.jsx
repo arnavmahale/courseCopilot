@@ -57,7 +57,7 @@ export default function ProgressTracker({ progress, title = 'Agent pipeline prog
         <div className="rounded-[var(--cc-radius-md)] border border-[var(--cc-border)] bg-[var(--cc-bg)] px-4 py-5">
           <p className="text-[15px] font-medium text-[var(--cc-label)] mb-2">Running full evaluation (no live stream)</p>
           <p className="cc-footnote leading-relaxed mb-3">
-            The browser could not open the streaming endpoint (often a wrong <code className="font-mono text-[12px]">VITE_API_URL</code>, a trailing slash, or an old deploy). The same API is still working — this step can take many minutes with no step updates.
+            The browser could not open the streaming endpoint (often a wrong <code className="font-mono text-[12px]">VITE_API_URL</code> at build time, a trailing slash, missing API <code className="font-mono text-[12px]">CORS_ALLOWED_ORIGINS</code>, or an old deploy). The same API is still working — this step can take many minutes with no step updates.
           </p>
           {progress.message && (
             <p className="text-[13px] text-[var(--cc-label-secondary)] font-mono">{progress.message}</p>

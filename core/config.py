@@ -14,6 +14,10 @@ class Settings(BaseSettings):
     app_name: str = "Course Co-Pilot"
     debug: bool = True
 
+    # CORS: comma-separated origins (e.g. https://app.up.railway.app,http://localhost:5173).
+    # Empty → allow any origin without credentials (valid for typical SPA + Bearer/anon API).
+    cors_allowed_origins: str = ""
+
     # Data Settings
     default_csv_path: str = "data/syllabus_dataset.csv"
 
