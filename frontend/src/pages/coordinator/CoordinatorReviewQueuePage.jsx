@@ -3,7 +3,10 @@ import PageContainer from '../../components/layout/PageContainer'
 import StakeholderNav from '../../components/stakeholders/StakeholderNav'
 
 const navItems = [
-  { to: '/coordinator', label: 'Overview', end: true },
+  { to: '/coordinator', label: 'University', end: true },
+  { to: '/coordinator/operations', label: 'Operations' },
+  { to: '/coordinator/students', label: 'Evaluations' },
+  { to: '/coordinator/deadlines', label: 'Deadlines' },
   { to: '/coordinator/review-queue', label: 'Review queue' },
   { to: '/coordinator/policies', label: 'Policies' },
 ]

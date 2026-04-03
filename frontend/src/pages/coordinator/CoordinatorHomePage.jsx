@@ -3,13 +3,19 @@ import PageContainer from '../../components/layout/PageContainer'
 import StakeholderNav from '../../components/stakeholders/StakeholderNav'
 
 const navItems = [
-  { to: '/coordinator', label: 'Overview', end: true },
+  { to: '/coordinator', label: 'University', end: true },
+  { to: '/coordinator/operations', label: 'Operations' },
+  { to: '/coordinator/students', label: 'Evaluations' },
+  { to: '/coordinator/deadlines', label: 'Deadlines' },
   { to: '/coordinator/review-queue', label: 'Review queue' },
   { to: '/coordinator/policies', label: 'Policies' },
 ]
 
 const tools = [
-  { to: '/dashboard', title: 'Dashboard', desc: 'Dataset statistics and distribution.', live: true },
+  { to: '/coordinator/operations', title: 'Operations', desc: 'Pipeline counts, faculty review load, approvals.', live: true },
+  { to: '/coordinator/students', title: 'Evaluation log', desc: 'All stored student runs and statuses.', live: true },
+  { to: '/coordinator/deadlines', title: 'Deadlines', desc: 'Set due dates for student submissions.', live: true },
+  { to: '/dashboard', title: 'Data dashboard', desc: 'Dataset statistics and distribution.', live: true },
   { to: '/batch', title: 'Batch evaluation', desc: 'Evaluate many source courses against the target catalog.', live: true },
   { to: '/courses', title: 'Catalog', desc: 'Browse and search all loaded courses.', live: true },
   { to: '/catalog-match', title: 'Quick match', desc: 'Single-course match for spot checks.', live: true },
@@ -19,7 +25,7 @@ export default function CoordinatorHomePage() {
   return (
     <PageContainer
       title="University console"
-      subtitle="Operational tools for transfer articulation and evaluators. Live items use your running API; queue and policy pages are static until Supabase and workflows are connected."
+      subtitle="University portal: Supabase-backed operations (evaluations, deadlines) plus live API tools. Wire env keys and run SQL migrations on branch jaideep."
       breadcrumbs={[{ label: 'University' }]}
     >
       <StakeholderNav items={navItems} />
