@@ -75,7 +75,13 @@ export default function useTranscriptEval() {
       }
 
       try {
-        setProgress({ stage: 'parsing', current: 0, total: 0, message: 'Processing (no live progress)...' })
+        setProgress({
+          stage: '__fallback__',
+          current: 0,
+          total: 0,
+          message:
+            'POST /pipeline/transcript-evaluate (non-streaming). Redeploy frontend with fixed VITE_API_URL and ensure API allows your site origin if you still see this.',
+        })
         const res = await api.post('/pipeline/transcript-evaluate', formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
           timeout: TRANSCRIPT_EVAL_TIMEOUT_MS,
