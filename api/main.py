@@ -19,7 +19,12 @@ import asyncio
 import openai
 
 from core.config import settings
-from core.data_loader import CourseDataLoader
+try:
+    from core.data_loader import CourseDataLoader
+    _HAS_DATA_LOADER = True
+except ImportError:
+    CourseDataLoader = None
+    _HAS_DATA_LOADER = False
 from core.matcher import SimilarityEngine
 from core.catalog_cache import CatalogCache
 from core.pipeline import TransferPipeline
