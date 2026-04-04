@@ -8,6 +8,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl poppler-ut
 
 WORKDIR /app
 
+# Explicit copy so the file is always in the image (avoids missing /app/docker-entrypoint.sh on some hosts).
+COPY run_server.py /app/run_server.py
+
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
@@ -19,10 +22,8 @@ RUN cd frontend && npm run build
 
 COPY . .
 
-RUN chmod +x /app/docker-entrypoint.sh
-
 ENV PYTHONUNBUFFERED=1
 EXPOSE 8000
 
-# ENTRYPOINT survives many host overrides; PORT is read inside the script (no shell expansion needed).
-ENTRYPOINT ["/app/docker-entrypoint.sh"]
+# Python reads os.environ["PORT"] — works when Railway does not expand $PORT in the start command.
+CMD ["python", "/app/run_server.py"]
