@@ -19,8 +19,10 @@ RUN cd frontend && npm run build
 
 COPY . .
 
+RUN chmod +x /app/docker-entrypoint.sh
+
 ENV PYTHONUNBUFFERED=1
 EXPOSE 8000
 
-# JSON + shell so Railway's PORT is expanded (plain CMD can be overridden badly in some setups)
-CMD ["sh", "-c", "exec uvicorn serve:root_app --host 0.0.0.0 --port ${PORT:-8000}"]
+# ENTRYPOINT survives many host overrides; PORT is read inside the script (no shell expansion needed).
+ENTRYPOINT ["/app/docker-entrypoint.sh"]

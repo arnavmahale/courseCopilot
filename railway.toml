@@ -5,6 +5,8 @@ builder = "DOCKERFILE"
 dockerfilePath = "Dockerfile"
 
 [deploy]
+# Use script so PORT comes from container env (Dashboard "Start Command" often breaks `$PORT`).
+startCommand = "/app/docker-entrypoint.sh"
 healthcheckPath = "/health"
 healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
