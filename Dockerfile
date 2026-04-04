@@ -23,4 +23,4 @@ RUN cd frontend && npm run build
 COPY . .
 
 EXPOSE 8000
-CMD uvicorn serve:root_app --host 0.0.0.0 --port ${PORT:-8000}
+CMD ["sh", "-c", "uvicorn serve:root_app --host 0.0.0.0 --port ${PORT:-8000}"]
