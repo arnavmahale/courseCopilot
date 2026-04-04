@@ -10,6 +10,8 @@ openai
 
 # PDF Processing
 pdfplumber
+pdf2image
+Pillow
 
 # Web Search Agent
 duckduckgo-search

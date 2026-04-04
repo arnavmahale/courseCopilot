@@ -117,20 +117,24 @@ async def startup_event():
         print("  POST /pipeline/transcript-evaluate — transcript PDF upload")
     except Exception as e:
         print(f"Error: Could not initialize similarity engine: {e}")
-        print("Ensure sentence-transformers and scikit-learn are installed")
+        print("Check OPENAI_API_KEY and core dependency imports.")
 
     # Auto-load the default dataset (optional — legacy endpoints use this)
-    try:
-        csv_path = settings.default_csv_path
-        data_loader = CourseDataLoader(csv_path)
-        data_loader.load()
-        stats = data_loader.get_statistics()
-        print(f"✓ Dataset loaded: {stats['total_courses']} courses from {csv_path}")
-        print(f"  Universities: {stats['by_university']}")
-    except Exception as e:
-        print(f"  Note: Static dataset not loaded ({e}). Legacy endpoints unavailable.")
-        print("  The on-demand pipeline (/pipeline/evaluate) works without a dataset.")
+    if not _HAS_DATA_LOADER or CourseDataLoader is None:
+        print("  Note: CourseDataLoader unavailable (pandas/CSV stack removed). Legacy CSV endpoints disabled.")
         data_loader = None
+    else:
+        try:
+            csv_path = settings.default_csv_path
+            data_loader = CourseDataLoader(csv_path)
+            data_loader.load()
+            stats = data_loader.get_statistics()
+            print(f"✓ Dataset loaded: {stats['total_courses']} courses from {csv_path}")
+            print(f"  Universities: {stats['by_university']}")
+        except Exception as e:
+            print(f"  Note: Static dataset not loaded ({e}). Legacy endpoints unavailable.")
+            print("  The on-demand pipeline (/pipeline/evaluate) works without a dataset.")
+            data_loader = None
 
 
 # ============== Endpoints ==============
